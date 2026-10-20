@@ -1,0 +1,148 @@
+{
+  "stations": 120,
+  "events": 861,
+  "events_per_winter": 24.6,
+  "station_level": [
+    {
+      "q": 0.9,
+      "independence": 0.1,
+      "chi_median": 0.2911,
+      "chi_p10": 0.2293,
+      "chi_p90": 0.3633,
+      "ratio_to_independence_median": 2.9408
+    },
+    {
+      "q": 0.95,
+      "independence": 0.05,
+      "chi_median": 0.1867,
+      "chi_p10": 0.1361,
+      "chi_p90": 0.2651,
+      "ratio_to_independence_median": 3.7484
+    },
+    {
+      "q": 0.98,
+      "independence": 0.02,
+      "chi_median": 0.0887,
+      "chi_p10": 0.056,
+      "chi_p90": 0.1603,
+      "ratio_to_independence_median": 4.4471
+    },
+    {
+      "q": 0.99,
+      "independence": 0.01,
+      "chi_median": 0.0496,
+      "chi_p10": 0.0159,
+      "chi_p90": 0.1148,
+      "ratio_to_independence_median": 5.029
+    }
+  ],
+  "event_level": {
+    "kendall_tau": 0.37110136723271814,
+    "p": 8.785095038663536e-59,
+    "gumbel_theta": 1.4971237594504516,
+    "gumbel_lambda_upper": 0.41118907124714577,
+    "gaussian_rho": 0.5270393491436034,
+    "aic": {
+      "independence": 0.0,
+      "gaussian": -277.8977311990725,
+      "gumbel": -257.4943425493542
+    },
+    "best_by_aic": "gaussian"
+  },
+  "joint_return_periods": [
+    {
+      "marginal_return_period": 2,
+      "per_event_marginal_prob": 0.02,
+      "joint_rp_independence": 98.4,
+      "joint_rp_gaussian": 10.76,
+      "joint_rp_gumbel": 4.75,
+      "joint_rp_empirical": 35.0,
+      "events_both_above_observed": 1
+    },
+    {
+      "marginal_return_period": 5,
+      "per_event_marginal_prob": 0.01,
+      "joint_rp_independence": 615.0,
+      "joint_rp_gaussian": 37.57,
+      "joint_rp_gumbel": 12.05,
+      "joint_rp_empirical": 35.0,
+      "events_both_above_observed": 1
+    },
+    {
+      "marginal_return_period": 10,
+      "per_event_marginal_prob": 0.0,
+      "joint_rp_independence": 2460.0,
+      "joint_rp_gaussian": 96.31,
+      "joint_rp_gumbel": 24.21,
+      "joint_rp_empirical": 35.0,
+      "events_both_above_observed": 1
+    },
+    {
+      "marginal_return_period": 20,
+      "per_event_marginal_prob": 0.0,
+      "joint_rp_independence": 9840.0,
+      "joint_rp_gaussian": 246.15,
+      "joint_rp_gumbel": 48.53,
+      "joint_rp_empirical": NaN,
+      "events_both_above_observed": 0
+    },
+    {
+      "marginal_return_period": 50,
+      "per_event_marginal_prob": 0.0,
+      "joint_rp_independence": 61500.0,
+      "joint_rp_gaussian": 847.71,
+      "joint_rp_gumbel": 121.49,
+      "joint_rp_empirical": NaN,
+      "events_both_above_observed": 0
+    }
+  ],
+  "tail_diagnostic": [
+    {
+      "per_event_prob_each": 0.5,
+      "observed": 303,
+      "independence": 215.25,
+      "gaussian": 291.32,
+      "gumbel": 286.24
+    },
+    {
+      "per_event_prob_each": 0.25,
+      "observed": 111,
+      "independence": 53.81,
+      "gaussian": 106.75,
+      "gumbel": 114.63
+    },
+    {
+      "per_event_prob_each": 0.1,
+      "observed": 33,
+      "independence": 8.61,
+      "gaussian": 29.36,
+      "gumbel": 39.49
+    },
+    {
+      "per_event_prob_each": 0.05,
+      "observed": 12,
+      "independence": 2.15,
+      "gaussian": 11.22,
+      "gumbel": 18.72
+    },
+    {
+      "per_event_prob_each": 0.02,
+      "observed": 1,
+      "independence": 0.34,
+      "gaussian": 3.18,
+      "gumbel": 7.24
+    }
+  ],
+  "top10_wind_events_rain_rank": {
+    "2007-01-17 Kyrill": 2,
+    "1994-01-26": 79,
+    "1999-12-26 Lothar": 40,
+    "1993-12-07": 114,
+    "1993-01-13": 601,
+    "2002-10-25 Jeanett": 37,
+    "1993-01-22": 143,
+    "2022-02-16 Ylenia/Zeynep": 104,
+    "1992-11-25": 234,
+    "2008-02-29 Emma": 20
+  }
+}

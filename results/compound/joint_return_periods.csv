@@ -1,0 +1,6 @@
+marginal_return_period,per_event_marginal_prob,joint_rp_independence,joint_rp_gaussian,joint_rp_gumbel,joint_rp_empirical,events_both_above_observed
+2,0.0203,98.4000,10.7572,4.7537,35.0000,1
+5,0.0081,615.0000,37.5684,12.0483,35.0000,1
+10,0.0041,2460.0000,96.3138,24.2077,35.0000,1
+20,0.0020,9840.0000,246.1549,48.5272,,0
+50,0.0008,61500.0000,847.7058,121.4862,,0

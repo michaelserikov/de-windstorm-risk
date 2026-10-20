@@ -85,3 +85,60 @@ def footprints(prints: dict[str, pd.Series], stations: pd.DataFrame, out: Path) 
     fig.suptitle("Storm footprints at DWD stations", x=0.02, ha="left", color=INK, fontsize=12)
     fig.savefig(out, dpi=160, bbox_inches="tight")
     plt.close(fig)
+
+
+# --- v0.3: compound wind and rain ----------------------------------------------------------------
+
+def chi_map(chi: pd.DataFrame, out: Path) -> None:
+    """Station map of chi(0.98) = P(rain > r98 | gust > v98); 0.02 under independence."""
+    fig, ax = plt.subplots(figsize=(5.6, 6.2))
+    sc = ax.scatter(chi["lon"], chi["lat"], c=chi["chi"], cmap="viridis", vmin=0, vmax=0.2, s=30,
+                    edgecolor=GRID, linewidth=0.4)
+    ax.set_aspect(1.55)
+    ax.set_xticks([]); ax.set_yticks([])
+    for side in ax.spines.values():
+        side.set_visible(False)
+    ax.set_facecolor(SURFACE); fig.set_facecolor(SURFACE)
+    cb = fig.colorbar(sc, ax=ax, orientation="horizontal", fraction=0.05, pad=0.03)
+    cb.set_label("P(rain > 98th pct | gust > 98th pct), winter days; independence = 0.02", color=INK2, fontsize=8)
+    ax.set_title("Wind and rain extremes on the same day", loc="left", color=INK, fontsize=12)
+    fig.savefig(out, dpi=160, bbox_inches="tight")
+    plt.close(fig)
+
+
+def wind_rain_scatter(events: pd.DataFrame, out: Path) -> None:
+    """Storm events: wind loss index against rain measure, named storms labelled."""
+    fig, ax = plt.subplots(figsize=(8, 4.6))
+    ax.scatter(events["loss_index"], events["rain_ratio"], s=10, color=BLUE, alpha=0.45, edgecolor="none")
+    named = events[events["storm"].fillna("") != ""]
+    ax.scatter(named["loss_index"], named["rain_ratio"], s=30, color=ORANGE, edgecolor=SURFACE, zorder=3)
+    for _, r in named.iterrows():
+        ax.annotate(r["storm"], (r["loss_index"], r["rain_ratio"]), xytext=(4, 3), textcoords="offset points",
+                    fontsize=8, color=INK2)
+    ax.set_xscale("log")
+    ax.set_xlim(left=1e-6)
+    _style(ax, "Winter storm events: wind loss index vs rainfall during the event", "rain / local 98th percentile (weighted mean)")
+    ax.set_xlabel("wind loss index (log scale)", color=INK2)
+    fig.tight_layout()
+    fig.savefig(out, dpi=160)
+    plt.close(fig)
+
+
+def joint_rp(jrp: pd.DataFrame, out: Path) -> None:
+    """Joint return period of events extreme in both wind and rain, by dependence model."""
+    fig, ax = plt.subplots(figsize=(8, 4.2))
+    x = np.arange(len(jrp))
+    width = 0.2
+    for i, (col, colour, label) in enumerate((("joint_rp_independence", GRID, "Independence"),
+                                               ("joint_rp_gaussian", BLUE, "Gaussian copula"),
+                                               ("joint_rp_gumbel", DARK, "Gumbel copula"),
+                                               ("joint_rp_empirical", ORANGE, "Observed"))):
+        ax.bar(x + (i - 1.5) * width, jrp[col], width * 0.92, color=colour, label=label,
+               edgecolor=INK2 if colour == GRID else "none", linewidth=0.6)
+    ax.set_yscale("log")
+    ax.set_xticks(x, [f"{t}-winter level" for t in jrp["marginal_return_period"]])
+    _style(ax, "How often is a storm extreme in wind AND rain? Joint return period", "winters (log scale)")
+    ax.legend(frameon=False, ncols=4, loc="upper left", fontsize=8, labelcolor=INK)
+    fig.tight_layout()
+    fig.savefig(out, dpi=160)
+    plt.close(fig)
