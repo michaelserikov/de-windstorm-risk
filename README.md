@@ -1,5 +1,7 @@
 # German windstorm risk from open data: hazard to loss, and compound wind and rain extremes (v0.2)
 
+[![tests](https://github.com/michaelserikov/de-windstorm-risk/actions/workflows/tests.yml/badge.svg)](https://github.com/michaelserikov/de-windstorm-risk/actions/workflows/tests.yml)
+
 How large is a 1-in-200-year windstorm loss in Germany, and how well can 35 winters of observations pin it down? This project builds the hazard-to-loss chain of a catastrophe model from open data only: daily maximum gusts at 156 DWD stations (winters 1990/91 to 2024/25), a storm loss index weighted by population, an event set with a 72-hour clause, extreme value statistics and the insurance metrics a cat model reports (average annual loss, exceedance-probability curves, 1-in-200 loss, tail value at risk).
 
 **Main findings**
