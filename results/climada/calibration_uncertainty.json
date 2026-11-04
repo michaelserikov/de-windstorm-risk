@@ -1,0 +1,14 @@
+{
+  "storms": 8,
+  "eur_mio_per_index_unit": 16095.551334430786,
+  "se_log_scale": 0.09745034962270516,
+  "aep_1in200_bn_eur": 11.980098232082629,
+  "range_bootstrap_only_bn_eur": [
+    4.919738053667279,
+    28.41474429533821
+  ],
+  "range_with_calibration_bn_eur": [
+    4.832245934326745,
+    30.282729089087823
+  ]
+}

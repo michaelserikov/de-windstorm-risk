@@ -126,7 +126,7 @@ Two exploratory additions. Both are associations for one country and a small cal
 
 **Insured-loss check** (`scripts/export_footprints.py`, then `scripts/climada_windstorm.py` in an environment with CLIMADA; `results/climada/`). Station footprints go through a CLIMADA impact function, mean damage ratio proportional to (gust / v98 - 1) to a power, with one scale factor fitted to GDV insured property losses of eight storms (portfolio and prices of 2020, as reprinted by a trade publication; two entries preliminary).
 - Leave-one-out median error is a factor of 1.23 for power 4, 1.29 for power 3 and 1.38 for power 2; worst storm a factor of 1.53 for power 4. Kyrill is 3.0 bn EUR in the model against 3.35 bn EUR reported. Eight storms do not establish that power 4 is better than the cubic form.
-- Scaling the cubic index by its fitted factor turns the 1-in-200 annual loss into about 12 bn EUR, with a 90% range of 5 to 29 bn EUR from the bootstrap above. This range does not include the calibration uncertainty, so it is a lower bound on the real uncertainty. Read it as an order of magnitude, not as a German market loss estimate.
+- Scaling the cubic index by its fitted factor (`python -m windrisk.calibration`, no CLIMADA needed) turns the 1-in-200 annual loss into about 12 bn EUR. The 90% range is 4.9 to 28 bn EUR from the bootstrap alone and 4.8 to 30 bn EUR with the sampling uncertainty of the factor: 35 winters of hazard matter far more than eight storms of calibration. The range still leaves out structural errors, such as population standing in for insured values, so read it as an order of magnitude, not as a German market loss estimate.
 
 ## Method
 
