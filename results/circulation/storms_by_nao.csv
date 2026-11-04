@@ -1,0 +1,4 @@
+group,events,mean_loss,total_loss,share_of_days,share_of_events,share_of_loss,event_rate_ratio
+NAO high,321,0.00500,1.60419,0.33307,0.37282,0.58466,1.11934
+NAO low,270,0.00139,0.37518,0.33433,0.31359,0.13674,0.93797
+NAO middle,270,0.00283,0.76445,0.33260,0.31359,0.27861,0.94284

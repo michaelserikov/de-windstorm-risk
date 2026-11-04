@@ -1,0 +1,50 @@
+{
+  "best_power": 4,
+  "by_power": {
+    "2": {
+      "scale_million_eur": 70054.84303054101,
+      "storms_matched": 8,
+      "loo_median_abs_error_factor": 1.3779066286518162,
+      "loo_max_abs_error_factor": 1.8238537870602023,
+      "rank_corr": 0.4000661320993193,
+      "corr_with_loss_index": 0.9725537745428989,
+      "mean_annual_loss_mio": 1506.8218020373727,
+      "largest_event_mio": 1980.06086469779
+    },
+    "3": {
+      "scale_million_eur": 437552.53097105504,
+      "storms_matched": 8,
+      "loo_median_abs_error_factor": 1.2937835888989861,
+      "loo_max_abs_error_factor": 1.5619440347315372,
+      "rank_corr": 0.5455447255899809,
+      "corr_with_loss_index": 0.9999677635444278,
+      "mean_annual_loss_mio": 1253.11836390297,
+      "largest_event_mio": 2477.6168187486473
+    },
+    "4": {
+      "scale_million_eur": 2466969.5810993435,
+      "storms_matched": 8,
+      "loo_median_abs_error_factor": 1.2328519980319668,
+      "loo_max_abs_error_factor": 1.5283601208925923,
+      "rank_corr": 0.6910233190806424,
+      "corr_with_loss_index": 0.9785675165837424,
+      "mean_annual_loss_mio": 1192.3550503447514,
+      "largest_event_mio": 3233.334002811349
+    }
+  },
+  "ep_table_columns": [
+    "return_period",
+    "aep",
+    "oep",
+    "aep_x_aal",
+    "oep_x_aal",
+    "oep_gev"
+  ],
+  "cubic_eur_mio_per_index_unit": 16205.64929522426,
+  "aep_1in200_bn_eur_cubic": {
+    "central": 12.1,
+    "bootstrap_low": 5.0,
+    "bootstrap_high": 28.7
+  },
+  "gdv_source": "GDV, Sachversicherung, portfolio and prices 2020, status February 2022, as reprinted by Betriebskosten aktuell: https://dev.wohnungswirtschaft-heute.de/wp-content/uploads/2022/04/Winterstuerme-Versicherungsschaeden-14-Mrd-Euro-GDV.pdf"
+}

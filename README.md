@@ -1,4 +1,4 @@
-# German windstorm risk from open data: hazard to loss, and compound wind and rain extremes (v0.2)
+# German windstorm risk from open data: hazard to loss, compound wind and rain extremes, circulation and a CLIMADA check (v0.3)
 
 [![tests](https://github.com/michaelserikov/de-windstorm-risk/actions/workflows/tests.yml/badge.svg)](https://github.com/michaelserikov/de-windstorm-risk/actions/workflows/tests.yml)
 
@@ -114,6 +114,20 @@ Joint return periods in winters; a T-winter level is exceeded by one event in T 
 
 **Limitations.** Rainfall is a measure of exceedance, not of flood damage: there is no rainfall damage function, no river or pluvial flood model and no combined loss in money. Daily totals and gauge stations miss short convective peaks. The dependence is estimated from 35 winters and is the same everywhere in Germany, although the station map suggests it is stronger in some uplands.
 
+## v0.3: circulation and an insured-loss check with CLIMADA
+
+Two exploratory additions. Both are associations for one country and a small calibration sample, not causes and not a loss estimate for any portfolio.
+
+**Circulation** (`python -m windrisk.circulation`, `results/circulation/`). Winter days 1990/91 to 2024/25 are grouped by NOAA daily NAO terciles and by four weather regimes (k-means on the first ten EOFs of ERA5 mean sea level pressure anomalies). Tail dependence is the pooled chance of rain above its 98th percentile given a gust above its 98th percentile, at 120 stations, divided by the rain rate; the ranges are 90% intervals from resampling whole winters.
+- High-NAO days are a third of the days and carry 58% of the storm loss index, low-NAO days 14%. Storms are only slightly more frequent on high-NAO days (rate ratio 1.12); mean loss per event is 3.6 times the low-NAO value.
+- Wind and rain extremes are more dependent on high-NAO than on middle-NAO days (ratio to independence 5.8, range 5.0 to 6.7, against 3.7, range 2.9 to 4.8). Low NAO (4.9, range 3.2 to 6.9) cannot be separated from either.
+- Two regimes carry 89% of the loss index on 51% of the days. The regime with the most extreme gust days has the lowest tail ratio (3.3, range 2.7 to 4.0). One regime has so few gust extremes that its ratio is not informative (7.5, range 0.7 to 13.2).
+- Winter mean NAO has no trend (Kendall's tau -0.01). Joint exceedances per winter decline (tau -0.27, p = 0.023), driven by the stormy early 1990s, and winters with higher NAO have more of them (tau 0.26, p = 0.031). Given the instrument and siting changes below, the decline is not read as a climate signal.
+
+**Insured-loss check** (`scripts/export_footprints.py`, then `scripts/climada_windstorm.py` in an environment with CLIMADA; `results/climada/`). Station footprints go through a CLIMADA impact function, mean damage ratio proportional to (gust / v98 - 1) to a power, with one scale factor fitted to GDV insured property losses of eight storms (portfolio and prices of 2020, as reprinted by a trade publication; two entries preliminary).
+- Leave-one-out median error is a factor of 1.23 for power 4, 1.29 for power 3 and 1.38 for power 2; worst storm a factor of 1.53 for power 4. Kyrill is 3.0 bn EUR in the model against 3.35 bn EUR reported. Eight storms do not establish that power 4 is better than the cubic form.
+- Scaling the cubic index by its fitted factor turns the 1-in-200 annual loss into about 12 bn EUR, with a 90% range of 5 to 29 bn EUR from the bootstrap above. This range does not include the calibration uncertainty, so it is a lower bound on the real uncertainty. Read it as an order of magnitude, not as a German market loss estimate.
+
 ## Method
 
 - **Hazard.** DWD daily station observations: the daily maximum gust FX. Stations with records from 1990 to 2025 and gusts on at least 90% of winter days (October to March): 156 stations in all 16 states.
@@ -129,6 +143,9 @@ Joint return periods in winters; a T-winter level is exceeded by one event in T 
 |---|---|---|
 | [DWD Climate Data Center](https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/daily/kl/) | Daily station observations (KL): maximum gust FX, precipitation RSK | CC BY 4.0, source: Deutscher Wetterdienst |
 | [Eurostat demo_r_d2jan](https://ec.europa.eu/eurostat/databrowser/view/demo_r_d2jan/default/table) | Population on 1 January by NUTS-1 region | CC BY 4.0, source: Eurostat |
+| [NOAA CPC](https://www.cpc.ncep.noaa.gov/) | Daily NAO index | Public, source: NOAA |
+| ERA5 mean sea level pressure, public cloud copies (WeatherBench 2 for 1990-2022, ARCO-ERA5 for 2023-2025) | 6-hourly fields on 1.5 degrees over the North Atlantic | Copernicus licence, source: C3S/ECMWF |
+| GDV, Sachversicherung, status February 2022 | Insured property losses of eight storms, taken from a reprint; URL in `results/climada/summary.json` | Quoted figures |
 
 Raw files (about 180 MB) are downloaded into `data/raw/` on the first run and not committed.
 
@@ -140,20 +157,24 @@ python -m venv .venv
 pip install -e ".[test]"
 python -m windrisk.run            # downloads and caches the data, writes results/ and figures/
 python -m windrisk.compound_run   # v0.2: compound wind and rain, writes results/compound/
+python scripts/download_mslp_cloud.py   # v0.3: pressure fields (needs its own cloud packages)
+python -m windrisk.circulation    # v0.3: NAO and regimes, writes results/circulation/ (slow: bootstrap)
 pytest                            # offline tests
 ```
 
 ## Limitations
 
-- Loss index, not euros: no calibration to insured losses, and population stands in for insured values.
+- Loss index, not euros, in v0.1 and v0.2. The v0.3 calibration rests on one factor and eight storms, and population stands in for insured values.
 - Stations, not a grid: 156 points sample the wind field; coastal and mountain stations sit in different wind climates (handled by the local v98, but not by exposure).
 - Thirty-five winters with possible inhomogeneities in gust measurements over time; the declining trend and the early-1990s cluster need homogenised or reanalysis data before any climate interpretation.
+- Circulation: one country, station data and no correction for testing several groups. The pressure fields join two sources in 2023: conservative regridding before, nearest points after. The regimes depend on the choice of four clusters and are numbered, not named. Regimes come from k-means with a fixed seed, so another SciPy version could reorder them.
+- CLIMADA check: no building data and no vulnerability classes. The CLIMADA step runs in a separate environment and is not part of the automated tests.
 - Events are merged by date only (no storm tracking), and winter storms only: summer convective gusts are outside the event definition.
 
 ## Roadmap
 
-- **v0.3**: ERA5 reanalysis gusts and precipitation on a grid instead of stations (Copernicus Climate Data Store), the same chain, and a comparison with the station results.
-- **v0.4**: exposure on a population or building grid, calibration of the wind index to published insured storm losses, a rainfall damage function for a combined loss, and a stochastic event set to narrow the 1-in-200 uncertainty.
+- **Next**: ERA5 reanalysis gusts and precipitation on a grid instead of stations (Copernicus Climate Data Store), the same chain, and a comparison with the station results.
+- **After that**: exposure on a population or building grid, a rainfall damage function for a combined loss, and a stochastic event set to narrow the 1-in-200 uncertainty.
 
 ## Reference
 
