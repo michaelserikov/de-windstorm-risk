@@ -1,4 +1,4 @@
-# German windstorm risk from open data: hazard to loss, compound wind and rain extremes, circulation and a CLIMADA check (v0.3)
+# German windstorm risk from open data: hazard to loss, compound wind and rain extremes, circulation, a CLIMADA check, parametric cover and a cat bond layer (v0.4)
 
 [![tests](https://github.com/michaelserikov/de-windstorm-risk/actions/workflows/tests.yml/badge.svg)](https://github.com/michaelserikov/de-windstorm-risk/actions/workflows/tests.yml)
 
@@ -128,6 +128,38 @@ Two exploratory additions. Both are associations for one country and a small cal
 - Leave-one-out median error is a factor of 1.23 for power 4, 1.29 for power 3 and 1.38 for power 2; worst storm a factor of 1.53 for power 4. Kyrill is 3.0 bn EUR in the model against 3.35 bn EUR reported. Eight storms do not establish that power 4 is better than the cubic form.
 - Scaling the cubic index by its fitted factor (`python -m windrisk.calibration`, no CLIMADA needed) turns the 1-in-200 annual loss into about 12 bn EUR. The 90% range is 4.9 to 28 bn EUR from the bootstrap alone and 4.8 to 30 bn EUR with the sampling uncertainty of the factor: 35 winters of hazard matter far more than eight storms of calibration. The range still leaves out structural errors, such as population standing in for insured values, so read it as an order of magnitude, not as a German market loss estimate.
 
+## v0.4: parametric cover, basis risk and a cat bond layer
+
+`python -m windrisk.parametric`, results in `results/parametric/`. Both parts use the euro scale of v0.3, so they carry its calibration caveats; the cover is for a hypothetical insurer and the bond is not priced against any real transaction.
+
+**Basis risk of index triggers.** A hypothetical insurer holds 10% of the storm market in Hamburg, Bremen, Niedersachsen and Schleswig-Holstein; its event loss is the regional part of the calibrated index. It buys a per-event layer from the loss exceeded once in 5 winters (22 million EUR) to the loss exceeded once in 25 winters (54 million EUR); 6 of the 861 events reach it. Each index trigger becomes a modelled loss through a power curve matched to the quantiles of its 25 largest values and the 25 largest losses, fitted on the odd winters and tested on the even ones and the reverse, and pays the same layer on that modelled loss. Hedge effect: reduction in the variance of the annual retained loss (loss minus payout plus the mean payout as premium), in winters built from Poisson counts of resampled historical events.
+
+| Trigger | Rank correlation with loss, largest 10% of events | Layer events missed (of 6) | Shortfall, share of indemnity | Variance reduction |
+|---|---|---|---|---|
+| Indemnity | 1.00 | 0 | 0% | 46% |
+| Industry loss (national index) | 0.61 | 6 | 100% | 0% |
+| One station (Hamburg) | 0.71 | 1 | 50% | 28% |
+| Three cities (Hamburg, Bremen, Hannover) | 0.83 | 1 | 35% | 38% |
+| All 35 regional stations, equal weights | 0.97 | 1 | 21% | 41% |
+| Three steps on the Hamburg gust (29.8, 32.3, 33.8 m/s) | 0.70 | 1 | 24% | 49% |
+
+- A national industry-loss trigger does not protect a regional book: it pays for Kyrill, the January 1994 storm, December 1993 and Lothar, which has no loss in the northern index, and nothing for the six events in the layer, among them 13-15 January 1993 and 27-29 October 2013 (storm Christian). Ylenia/Zeynep, large nationally, ends just below the regional attachment.
+- More stations mean less basis risk: the regional station index keeps about nine tenths of the hedge effect of indemnity, one station about six tenths.
+- The single-station cover depends on how its loss curve is fitted: with 15, 25, 40 or 100 fitted values its variance reduction is 31%, 28%, 20% or 0%, while the regional index stays between 41% and 46% (`fit_points_sensitivity.csv`). With 100 values the curve follows the many small events, the city triggers never reach the attachment and pay nothing. A trigger based on few stations is a design choice with its own model risk.
+- The step cover pays 61% more than indemnity in total, so its higher variance reduction is bought with a higher premium; it misses one layer event and pays three events below the attachment.
+- With a per-event vulnerability error (lognormal, standard deviation 0.28 in logs, the spread of the eight GDV calibration ratios) the order of the triggers stays the same; the regional index's shortfall rises from 21% to 41% and its variance reduction falls to 39%, against 53% for indemnity (`basis_risk_with_vulnerability_error.csv`).
+
+**Cat bond layer.** A per-occurrence layer on the national calibrated loss attaches at the 1-in-50 occurrence loss of the central model (4.5 bn EUR) and exhausts at the 1-in-200 (10.5 bn EUR); annual principal loss is capped at the limit.
+
+| | Probability of attachment | Probability of exhaustion | Expected loss |
+|---|---|---|---|
+| Central model | 2.0% | 0.50% | 0.98% |
+| 90% range: bootstrap of winters and calibration factor | 0.29% to 4.4% | 0.03% to 1.5% | 0.10% to 2.6% |
+
+- The expected loss, the quantity a bond's spread is built on, is uncertain by a factor of about 25 when the layer is held fixed in euros and only the 35 winters and the calibration factor are resampled. This is the 1-in-200 uncertainty of v0.1 seen from the investor's side, and the reason bonds rely on stochastic event sets from vendor models.
+- Index against indemnity: with the same vulnerability error, the years in which only one of the two (index layer, loss layer) attaches are 40% of the years in which the index layer attaches. For an investor an index trigger is transparent and quick to settle; for the sponsor this is the basis risk it accepts.
+- The spread investors ask above the expected loss is not modelled.
+
 ## Method
 
 - **Hazard.** DWD daily station observations: the daily maximum gust FX. Stations with records from 1990 to 2025 and gusts on at least 90% of winter days (October to March): 156 stations in all 16 states.
@@ -159,6 +191,8 @@ python -m windrisk.run            # downloads and caches the data, writes result
 python -m windrisk.compound_run   # v0.2: compound wind and rain, writes results/compound/
 python scripts/download_mslp_cloud.py   # v0.3: pressure fields (needs its own cloud packages)
 python -m windrisk.circulation    # v0.3: NAO and regimes, writes results/circulation/ (slow: bootstrap)
+python -m windrisk.calibration    # v0.3: 1-in-200 in euros with calibration uncertainty
+python -m windrisk.parametric     # v0.4: parametric cover, basis risk, cat bond layer (needs results/climada/ footprints)
 pytest                            # offline tests
 ```
 
@@ -169,6 +203,7 @@ pytest                            # offline tests
 - Thirty-five winters with possible inhomogeneities in gust measurements over time; the declining trend and the early-1990s cluster need homogenised or reanalysis data before any climate interpretation.
 - Circulation: one country, station data and no correction for testing several groups. The pressure fields join two sources in 2023: conservative regridding before, nearest points after. The regimes depend on the choice of four clusters and are numbered, not named. Regimes come from k-means with a fixed seed, so another SciPy version could reorder them.
 - CLIMADA check: no building data and no vulnerability classes. The CLIMADA step runs in a separate environment and is not part of the automated tests.
+- Parametric cover and cat bond (v0.4): the loss proxy is built from the same station gusts as the triggers, so the basis risk shown comes from trigger design only and is a lower bound; six events reach the regional layer, so counts of missed events are small numbers; event resampling for the hedge effect never exceeds the largest observed regional event.
 - Events are merged by date only (no storm tracking), and winter storms only: summer convective gusts are outside the event definition.
 
 ## Roadmap

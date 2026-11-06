@@ -1,0 +1,58 @@
+{
+  "region": [
+    "Hamburg",
+    "Bremen",
+    "Niedersachsen",
+    "Schleswig-Holstein"
+  ],
+  "share": 0.1,
+  "eur_mio_per_index_unit": 16095.551334430786,
+  "vulnerability_log_sd": 0.27563121218885894,
+  "layer_mio_eur": {
+    "attachment": 22.01402538042977,
+    "exhaustion": 53.964163761145336,
+    "limit": 31.950138380715565,
+    "events_in_layer": 6
+  },
+  "step_gust_levels_ms": [
+    29.8,
+    32.3,
+    33.76
+  ],
+  "missing_hamburg_gust_events": 0,
+  "cat_bond": {
+    "attachment_bn_eur": 4.500274730634253,
+    "exhaustion_bn_eur": 10.503528451184131,
+    "central": {
+      "p_attach": 0.02,
+      "p_exhaust": 0.00502,
+      "expected_loss": 0.009801278415451782,
+      "mismatch_given_attach": 0.0,
+      "xi": 0.5975699254508342
+    },
+    "with_vulnerability_error": {
+      "p_attach": 0.02,
+      "p_exhaust": 0.00502,
+      "expected_loss": 0.009801278415451782,
+      "mismatch_given_attach": 0.403,
+      "xi": 0.5975699254508342
+    },
+    "bootstrap_with_calibration": {
+      "p_attach": {
+        "p05": 0.0028925,
+        "median": 0.0186,
+        "p95": 0.04404249999999997
+      },
+      "p_exhaust": {
+        "p05": 0.0003450000000000001,
+        "median": 0.00435,
+        "p95": 0.01492999999999999
+      },
+      "expected_loss": {
+        "p05": 0.0010465045919756633,
+        "median": 0.0091044654598633,
+        "p95": 0.025605891721113053
+      }
+    }
+  }
+}

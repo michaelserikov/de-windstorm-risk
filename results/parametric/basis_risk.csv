@@ -1,0 +1,7 @@
+trigger,spearman_top10pct_events,events_in_layer,missed_events,false_payouts,shortfall_share,overpayment_share,var_reduction,var99_gross,var99_net,tvar99_gross,tvar99_net
+indemnity,1.0000,6,0,0,0.0000,0.0000,0.4568,87.0058,63.5121,102.5878,72.9450
+industry loss (national index),0.6134,6,6,4,1.0000,0.8887,-0.0081,87.0058,86.7199,102.5878,102.3348
+one station (Hamburg),0.7047,6,1,0,0.4966,0.1369,0.2832,87.0058,73.8593,102.5878,86.1325
+"three cities (Hamburg, Bremen, Hannover)",0.8277,6,1,0,0.3477,0.2980,0.3791,87.0058,70.0469,102.5878,81.3580
+"all 35 regional stations, equal weights",0.9680,6,1,1,0.2123,0.1039,0.4120,87.0058,66.5167,102.5878,76.1358
+step cover on the Hamburg gust,0.7011,6,1,3,0.2355,0.8439,0.4879,87.0058,65.3915,102.5878,76.0822
